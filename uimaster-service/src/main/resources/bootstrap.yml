@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: uimaster-service
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8761}

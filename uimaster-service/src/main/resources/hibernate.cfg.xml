@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+		<!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">10</property>
+
+		<!-- Database connection settings -->
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/uimaster</property>
+        <property name="connection.username">uimaster</property>
+        <property name="connection.password">uimaster</property>
+		<!-- Enable Hibernate's automatic session context management -->
+		<property name="current_session_context_class">thread</property>
+		
+        <!--use JTA transaction for long time session management.
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.datasource">jdbc/uimaster</property>
+        <property name="current_session_context_class">jta</property>
+		<property name="transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</property>
+		<property name="transaction.jta.platform">org.hibernate.service.jta.platform.internal.BitronixJtaPlatform</property>
+        <property name="jndi.class">bitronix.tm.jndi.BitronixInitialContextFactory</property>
+        -->
+			
+		
+		<!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+		<property name="format_sql">false</property>
+		
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">update</property>
+		
+		<!-- Must turn on this attribute for lazy loading reference-->
+		<property name="enable_lazy_load_no_trans">true</property>
+		
+		<!--perf turning-->
+		<property name="generate_statistics">false</property>
+		
+		<property name="connection.zeroDateTimeBehavior">convertToNull</property> 
+		<property name="connection.autoReconnet">true</property>
+		<property name="connection.autoReconnectForPools">true</property>
+        <property name="connection.is-connection-validation-required">true</property>
+        <property name="connection.validationQuery">SELECT 1</property>
+        <property name="connection.testOnBorrow">true</property>          
+    </session-factory>
+</hibernate-configuration>

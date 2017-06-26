@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<registry xmlns="http://bmdp.shaolin.org/datamodel/Registry">
+    <node name="System">
+    	<item name="encoding" value="UTF-8"/>
+    	<!-- application running modes: Dev, Production -->
+    	<item name="runningMode" value="Dev"/>
+    	<node name="caches">
+            <node name="__sys_entity">
+	            <item name="maxSize" value="-1" />
+	            <item name="refreshTimeInMinutes" value="-1" />
+	            <item name="description" value="System default entities' cache." />
+	        </node>
+        </node>
+        <node name="jndi">
+            <!-- weblogic
+            <item name="java.naming.factory.initial" value="weblogic.jndi.WLInitialContextFactory" />
+            <item name="java.naming.provider.url" value="t3://${ip}:${port}" />
+            <item name="weblogic.jndi.createIntermediateContexts" value="true" />
+             -->
+            <!-- websphere
+            <item name="java.naming.factory.initial" value="com.ibm.websphere.naming.WsnInitialContextFactory" />
+            <item name="java.naming.provider.url" value="corbaloc:iiop:${ip}:${port}" />
+             -->
+            <!-- jboss
+            <item name="java.naming.factory.initial" value="org.jnp.interfaces.NamingContextFactory" />
+            <item name="java.naming.provider.url" value="jnp://${ip}:${port}" />
+            <item name="java.naming.factory.url.pkgs" value="org.jboss.naming:org.jnp.interfaces" />
+            <item name="java.naming.security.principal" value="user" />
+            <item name="java.naming.security.credentials" value="password" />
+             -->
+             <!-- tomcat
+             // nothing
+             -->
+        </node>
+        <node name="zookeeper_client">
+            <item name="serverInfo" value="localhost:2182" />
+            <item name="timeout" value="30000" />
+        </node>
+        <node name="i18n">
+            <node name="default">
+	            <item name="locale" value="zh_CN" />
+                <item name="dateTimeFormat" value="yyyy-MM-dd/HH:mm:ss" />
+                <item name="dateFormat" value="yyyy-MM-dd" />
+                <item name="floatNumberFormat" value="0.###" />
+                <item name="numberFormat" value="0" />
+                <item name="currencyFormat" value="0.##" />
+                <item name="currencySymbol" value="&#165;" />
+                <item name="isLeft" value="false" />
+                <item name="constraintSymbol" value="/images/uimaster_constraint.gif" />
+	        </node>
+	        <node name="en_US">
+	            <item name="locale" value="en_US" />
+            	<item name="dateTimeFormat" value="yyyy-MM-dd/HH:mm:ss" />
+            	<item name="dateFormat" value="yyyy-MM-dd" />
+            	<item name="floatNumberFormat" value="0.###" />
+            	<item name="numberFormat" value="0" />
+            	<item name="currencyFormat" value="0.##" />
+            	<item name="currencySymbol" value="&#164;" />
+            	<item name="isLeft" value="false" />
+            	<item name="constraintSymbol" value="/images/uimaster_constraint.gif" />
+	        </node>
+	        <node name="zh_CN">
+	            <item name="locale" value="zh_CN" />
+            	<item name="dateTimeFormat" value="yyyy-MM-dd/HH:mm:ss" />
+            	<item name="dateFormat" value="yyyy-MM-dd" />
+            	<item name="floatNumberFormat" value="0.###" />
+            	<item name="numberFormat" value="0" />
+            	<item name="currencyFormat" value="0.##" />
+            	<item name="currencySymbol" value="&#165;" />
+            	<item name="isLeft" value="false" />
+            	<item name="constraintSymbol" value="/images/uimaster_constraint.gif" />
+	        </node>
+        </node>
+
+        <node name="services">
+     	   <node name="zookeeper_server_service">
+ 	   	       <expression><![CDATA[
+ 	   	       import org.shaolin.bmdp.runtime.AppContext;
+			   import org.shaolin.bmdp.runtime.ddc.*;
+ 	   	       import org.shaolin.bmdp.persistence.internal.InitialPersistenceService;
+ 	   	       {
+ 	   	           //zookeeper server node is better be independent from app server.
+ 	   	           ZookeeperServiceLauncher zkLauncher = new ZookeeperServiceLauncher(false);
+				   //custom attributes here
+				   zkLauncher.getProperties().setProperty(ZookeeperServiceLauncher.CLIENT_PORT,"2182");
+				   zkLauncher.getProperties().setProperty(ZookeeperServiceLauncher.DATADIR, "/tmp/zookeeper");
+				   //
+ 	   	           AppContext.get().registerLifeCycleProvider(zkLauncher);
+ 	   	       }
+ 	   	       ]]></expression>
+    	    </node>
+            <node name="zookeeper_client_service">
+       	   	       <expression><![CDATA[
+       	   	       import org.shaolin.bmdp.runtime.AppContext;
+				   import org.shaolin.bmdp.runtime.ddc.*;
+       	   	       import org.shaolin.bmdp.runtime.ddc.client.ZookeeperClient;
+       	   	       import org.shaolin.bmdp.runtime.Registry;
+       	   	       {
+       	   	           ZookeeperClient zkClient = new ZookeeperClient();
+       	   	           zkClient.setConnectString(Registry.getInstance().getValue("/System/zookeeper_client/serverInfo"));//"127.0.0.1:2182"
+       	   	           zkClient.setTimeout(Registry.getInstance().getValue("/System/zookeeper_client/timeout", 30000));
+       	   	           AppContext.get().registerLifeCycleProvider(zkClient);
+       	   	           AppContext.get().register(zkClient);
+       	   	       }
+       	   	       ]]></expression>
+             </node>
+         </node>
+
+    </node>
+</registry>
+
